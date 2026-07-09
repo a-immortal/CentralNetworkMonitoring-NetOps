@@ -1,7 +1,7 @@
 
 ---
 
-# 🖥️ Central Network Monitor: Project Build & Deployment Runbook
+# 🖥️ Central Network Monitoring: Project Build & Deployment Runbook
 
 This document serves as the official architectural record, deployment guide, and troubleshooting ledger for the Central Network Monitor project. It details the complete step-by-step setup of the AWS infrastructure, the deployment of the Python/Streamlit software stack, and a comprehensive log of technical errors encountered and resolved.
 
