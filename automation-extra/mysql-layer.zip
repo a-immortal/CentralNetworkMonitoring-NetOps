@@ -1,0 +1,18 @@
+📦 2. Building the mysql-layer.zipAWS Lambda's default Python environment does not include the mysql.connector library. If you upload the script above without the library, Lambda will crash with a ModuleNotFoundError.To fix this, you must build a "Lambda Layer." The safest way to ensure compatibility is to build this directly inside the AWS CloudShell terminal.Step-by-Step Build Instructions:Log into the AWS Console and open CloudShell (the >_ icon at the top right).Run the following commands to structure and download the library:Bash# Create a directory specifically named 'python' (Lambda requires this exact name)
+mkdir -p build/python
+
+# Install the MySQL connector into that folder
+pip3 install mysql-connector-python -t build/python/
+
+# Navigate to the build directory
+cd build
+
+# Zip the folder into the deployment package
+zip -r mysql-layer.zip python
+Publish the zipped layer directly to your AWS Lambda service:Bashaws lambda publish-layer-version \
+    --layer-name mysql-connector-layer \
+    --description "MySQL Connector for Python 3.12" \
+    --zip-file fileb://mysql-layer.zip \
+    --compatible-runtimes python3.12
+Once published, go to your Lambda function in the AWS Console, scroll to the bottom, click Add a layer, choose Custom layers, and select your newly created mysql-connector-layer.⏱️ 3. Scheduling with Amazon EventBridgeTo make this truly automated, link the Lambda function to an EventBridge schedule (Cron Job).Go to Amazon EventBridge $\rightarrow$ Rules $\rightarrow$ Create rule.Name it NetOps-Weekly-DB-Purge.Select Schedule.Use the following Cron expression to run the cleanup every Sunday at Midnight (UTC):Plaintext0 0 ? * SUN *
+Set the Target as your AWS Lambda function (NetOps-DB-Cleanup).Save the rule. The database will now silently maintain itself without human intervention.
